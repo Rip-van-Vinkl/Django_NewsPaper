@@ -4,15 +4,39 @@ from django.contrib.auth.models import User
 
 class Author(models.Model):
     
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
-    author_rating = models.IntegerField(default=0)
+    author = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Имя автора')
+    author_rating = models.IntegerField(default=0, verbose_name='Рейтинг автора')
+    
+    class Meta:
+        verbose_name = 'Автор'
+        verbose_name_plural = 'Авторы'
+    
+    def __str__(self):
+        return self.author
 
-#   def update_rating(self):
 
+    def update_rating(self):
+
+        author_posts = Post.objects.filter(author = self.id)
+
+        author_posts_sum_rating = 0
+        for post in author_posts:
+            author_posts_sum_rating += post.post_rating * 3
+
+        author_comments_sum_rating = 0
+        for сomments in Comment.objects.filter(user=self.author):
+            author_comments_sum_rating += comments.comment_rating
+
+        author_posts_comments_sum_rating = 0
+        for comments in Comment.objects.filter(post=author_posts):
+            author_posts_comments_sum_rating += comments.comment_rating
+
+        self.author_rating = author_posts_sum_rating + author_comments_sum_rating + author_posts_comments_sum_rating
+        self.save()
 
 class Category(models.Model):
     
-    category = models.CharField(max_length=40, unique=True)
+    category = models.CharField(max_length=40, unique=True, default='...')
 
 
 class Post(models.Model):
