@@ -17,19 +17,20 @@ class Author(models.Model):
 
     def update_rating(self):
 
-        author_posts = Post.objects.filter(author = self.id)
+        author_posts = Post.objects.filter(author=self.id)
 
         author_posts_sum_rating = 0
         for post in author_posts:
             author_posts_sum_rating += post.post_rating * 3
 
         author_comments_sum_rating = 0
-        for сomments in Comment.objects.filter(user=self.author):
-            author_comments_sum_rating += comments.comment_rating
+        for comment in Comment.objects.filter(user=self.author):
+            author_comments_sum_rating += comment.comment_rating
 
         author_posts_comments_sum_rating = 0
-        for comments in Comment.objects.filter(post=author_posts):
-            author_posts_comments_sum_rating += comments.comment_rating
+        # не понимаю ???
+        # for ??? in Comment.objects.filter(???):
+        #    author_posts_comments_sum_rating += comment.comment_rating
 
         self.author_rating = author_posts_sum_rating + author_comments_sum_rating + author_posts_comments_sum_rating
         self.save()
@@ -68,8 +69,8 @@ class Post(models.Model):
         self.post_rating -= 1
         self.save()
 
-#    def preview(self):
-#        return str(self.post_text[0:124], '...')
+    def preview(self):
+        return str(self.post_text[0:125], '...')
 
 
 class PostCategory(models.Model):
